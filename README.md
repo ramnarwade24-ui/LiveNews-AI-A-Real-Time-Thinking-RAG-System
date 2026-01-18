@@ -1,23 +1,56 @@
-# LiveNewsAI - Real-Time RAG System for Breaking News
+LiveNewsAI — Real-Time Streaming RAG System for Breaking News
 
-🚀 **Production-grade real-time Retrieval Augmented Generation (RAG) system** built with **Pathway** that continuously ingests breaking news and answers questions using the latest articles without requiring restarts or re-indexing.
+🚀 Production-grade real-time Retrieval Augmented Generation (RAG) system built with Pathway that continuously ingests breaking news and answers questions using the latest articles — without requiring restarts or re-indexing.
 
-> **Live AI** - Answers update automatically as new articles arrive. No batch processing. No manual re-indexing.
+Live AI — Answers update automatically as new articles arrive. No batch processing. No manual re-indexing.
 
-## ✨ Key Features
+🎥 Hackathon Live Demo
 
-- **Real-Time Streaming**: Continuously ingests news from NewsAPI every 60 seconds
-- **Dynamic Vector Index**: Live KNN index updates automatically with new articles
-- **RAG-Powered Answers**: Questions answered using latest available articles
-- **Zero Downtime Updates**: New articles indexed without restart or re-indexing
-- **FastAPI REST API**: Production-ready endpoints with Swagger documentation
-- **Docker-Ready**: One-command deployment with docker-compose
-- **Fully Async**: Built for high concurrency and performance
-- **Modular Architecture**: Clean, extensible codebase
+Live Swagger UI (GitHub Codespaces):
+https://curly-umbrella-4j5x7vp6pxvqcjrj-8000.app.github.dev/docs
 
-## 🏗️ Architecture
+Health Check:
+https://curly-umbrella-4j5x7vp6pxvqcjrj-8000.app.github.dev/health
 
-```
+Example Query:
+
+"What are today's top business headlines?"
+
+The system demonstrates:
+
+Real-time ingestion
+
+Streaming vector indexing
+
+Live retrieval
+
+RAG pipeline execution
+
+✨ Key Features
+
+Real-Time Streaming — Continuously ingests news from NewsAPI every 60 seconds
+
+Dynamic Vector Index — Live KNN index updates automatically
+
+RAG-Powered Answers — Questions answered using latest articles
+
+Zero Downtime Updates — New articles indexed without restart
+
+FastAPI REST API — Production-ready API with Swagger UI
+
+Docker-Ready — One-command deployment
+
+Fully Async — High concurrency support
+
+Modular Architecture — Clean extensible codebase
+
+⭐ Bonus Capabilities
+
+Graceful AI Fallback — If OpenAI quota is unavailable, system still returns real-time retrieved news context, article summaries, and sources.
+
+No-Credit Mode — Fully functional retrieval + indexing pipeline without OpenAI credits.
+
+🏗️ Architecture
 Live News Stream (NewsAPI)
         ↓
    Pathway Connector
@@ -30,326 +63,166 @@ Live News Stream (NewsAPI)
         ↓
    RAG Query Engine
         ↓
-  LLM Answer Generation (GPT-4)
+  LLM Answer Generation (GPT-4o-mini with fallback mode)
         ↓
    FastAPI REST API
-```
 
-## 🚀 Quick Start
+🚀 Quick Start
+Prerequisites
 
-### Prerequisites
-- Python 3.10+ or Docker
-- NewsAPI key (free at [newsapi.org](https://newsapi.org))
-- OpenAI API key (get at [platform.openai.com](https://platform.openai.com))
+Python 3.10+ or Docker
 
-### Local Setup (5 minutes)
+NewsAPI key (free at https://newsapi.org
+)
 
-```bash
-# 1. Clone and navigate
+OpenAI API key (optional, only for AI summaries)
+
+Local Setup
 git clone https://github.com/ramnarwade24-ui/LiveNews-AI-A-Real-Time-Thinking-RAG-System
 cd LiveNews-AI-A-Real-Time-Thinking-RAG-System
 
-# 2. Set API keys
 export NEWS_API_KEY="your-newsapi-key"
+
+# Optional: only required for AI-generated answers
 export OPENAI_API_KEY="your-openai-key"
 
-# 3. Run quick start
 bash quickstart.sh
-```
 
-Server runs at **http://localhost:8000**
 
-### Docker Setup (Fastest)
+Server runs at:
+👉 http://localhost:8000
 
-```bash
-# Set API keys
+👉 Swagger UI: http://localhost:8000/docs
+
+Docker Setup
 export NEWS_API_KEY="your-newsapi-key"
-export OPENAI_API_KEY="your-openai-key"
+export OPENAI_API_KEY="your-openai-key"   # optional
 
-# Start everything
 bash docker-quickstart.sh
-```
 
-## 📖 API Examples
-
-### Ask a Question
-```bash
+📖 API Examples
+Ask a Question
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{
     "question": "What are the latest AI breakthroughs?",
     "top_k": 5
   }'
-```
 
-**Response:**
-```json
-{
-  "question": "What are the latest AI breakthroughs?",
-  "answer": "Based on recent articles, major AI developments include...",
-  "sources": ["https://example.com/article1", "https://example.com/article2"],
-  "num_documents": 5,
-  "index_size": 150,
-  "timestamp": "2024-01-18T10:30:45.123456"
-}
-```
-
-### Check System Health
-```bash
+Health Check
 curl http://localhost:8000/health
-```
 
-### Get Statistics
-```bash
+Get Stats
 curl http://localhost:8000/stats
-```
 
-### List Recent Articles
-```bash
-curl http://localhost:8000/articles?limit=10
-```
+🧠 Graceful Fallback Mode (No OpenAI Credits Required)
 
-## 🎯 Demo Real-Time Updates
+If OpenAI quota is unavailable, the system automatically switches to fallback mode:
 
-Observe how answers automatically update as new articles arrive:
+{
+  "answer": "AI model temporarily unavailable — showing retrieved news context.",
+  "article_summaries": [...],
+  "sources": [...],
+  "ai_status": "rate_limited"
+}
 
-```bash
-# Terminal 1: Start server
-python livenewsai/app.py
 
-# Terminal 2: Ask initial question
-curl -X POST http://localhost:8000/ask \
-  -d '{"question": "Latest technology news"}' \
-  -H "Content-Type: application/json"
+This allows full real-time RAG functionality without paid APIs.
 
-# Terminal 3: Monitor index growth
-watch -n 10 'curl http://localhost:8000/stats'
-
-# Wait 60+ seconds...
-# Ask the same question again in Terminal 2
-# Notice: New articles in answer, same pipeline!
-```
-
-## 📁 Project Structure
-
-```
+📁 Project Structure
 LiveNews-AI-A-Real-Time-Thinking-RAG-System/
 │
-├── livenewsai/                    # Main application
-│   ├── app.py                    # FastAPI server
-│   ├── pathway_pipeline.py       # Streaming engine
-│   ├── connectors.py             # News API connector
-│   ├── rag.py                    # RAG query engine
-│   ├── config.py                 # Configuration
-│   ├── requirements.txt          # Dependencies
-│   ├── test_livenewsai.py        # Tests
-│   └── README.md                 # Full documentation
+├── livenewsai/
+│   ├── app.py
+│   ├── pathway_pipeline.py
+│   ├── connectors.py
+│   ├── rag.py
+│   ├── config.py
+│   ├── requirements.txt
+│   └── test_livenewsai.py
 │
-├── Dockerfile                    # Container definition
-├── docker-compose.yml            # Multi-container setup
-├── .env.example                  # Environment template
-├── quickstart.sh                 # Local quick start
-├── docker-quickstart.sh          # Docker quick start
-├── examples.py                   # Usage examples
-├── DEPLOYMENT.md                 # Deployment guide
-└── README.md                     # This file
-```
+├── Dockerfile
+├── docker-compose.yml
+├── quickstart.sh
+├── docker-quickstart.sh
+├── DEPLOYMENT.md
+└── README.md
 
-## 🔧 Configuration
-
-Edit `livenewsai/config.py` or set environment variables:
-
-```bash
-export NEWS_POLLING_INTERVAL=60          # Seconds
-export NEWS_BATCH_SIZE=20                # Articles per fetch
+🔧 Configuration
+export NEWS_POLLING_INTERVAL=60
+export NEWS_BATCH_SIZE=20
 export EMBEDDING_MODEL=text-embedding-3-small
-export TOP_K_RESULTS=5                   # Articles to retrieve
-export LLM_MODEL=gpt-4o-mini             # LLM model
-export LOG_LEVEL=INFO                    # Logging level
-```
+export TOP_K_RESULTS=5
+export LLM_MODEL=gpt-4o-mini
+export LOG_LEVEL=INFO
 
-See [.env.example](.env.example) for all options.
+🛠️ Tech Stack
+Component	Technology
+Streaming	Pathway
+Framework	FastAPI
+Embeddings	OpenAI
+LLM	GPT-4o-mini
+Data	NewsAPI
+Vector Index	In-Memory KNN
+Server	Uvicorn
+Container	Docker
+🚦 API Endpoints
+Method	Endpoint	Purpose
+GET	/	API info
+GET	/health	System status
+POST	/ask	Ask question
+GET	/stats	System statistics
+GET	/articles	Recent articles
+GET	/docs	Swagger UI
+📊 Performance
 
-## 📊 Performance
+Latency: <500ms
 
-- **Latency**: <500ms per question (after initial load)
-- **Throughput**: 100+ questions/second
-- **Index Memory**: ~1.5MB per 1000 articles
-- **Embedding Time**: ~100ms per article
-- **Update Frequency**: 60 seconds (configurable)
+Streaming updates every 60 seconds
 
-## 🐳 Docker Deployment
+Index grows live without restart
 
-### Using Docker Compose
-```bash
-export NEWS_API_KEY="your-key"
-export OPENAI_API_KEY="your-key"
+Supports concurrent users
 
-docker-compose up --build
-```
+🧪 Testing
+pytest livenewsai/test_livenewsai.py -v
 
-### Manual Docker Build
-```bash
-docker build -t livenewsai:latest .
-
-docker run -d \
-  -p 8000:8000 \
-  -e NEWS_API_KEY="your-key" \
-  -e OPENAI_API_KEY="your-key" \
-  --name livenewsai \
-  livenewsai:latest
-```
-
-## ☁️ Cloud Deployment
-
-### AWS EC2
-```bash
-# See DEPLOYMENT.md for full instructions
-bash docker-quickstart.sh
-```
-
-### Google Cloud Run
-```bash
-gcloud run deploy livenewsai \
-  --source . \
-  --set-env-vars NEWS_API_KEY=your-key,OPENAI_API_KEY=your-key
-```
-
-### Kubernetes
-```bash
-kubectl apply -f k8s-deployment.yaml
-```
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud setup.
-
-## 🧪 Testing
-
-```bash
-cd livenewsai
-pip install pytest pytest-asyncio
-pytest test_livenewsai.py -v
-```
-
-## 📚 Examples
-
-Interactive examples:
-```bash
-python examples.py
-```
-
-Choose from:
-1. Basic usage
-2. Real-time updates demo
-3. Batch questions
-4. API integration
-
-## 🔐 Security
-
-- API keys via environment variables
-- Input validation on all endpoints
-- CORS configured
-- Rate limiting ready
-- Health checks for monitoring
-
-## 📖 Full Documentation
-
-- **[Complete API Docs](livenewsai/README.md)** - Full API reference
-- **[Deployment Guide](DEPLOYMENT.md)** - Cloud & production setup
-- **[Architecture Details](livenewsai/README.md#architecture-overview)** - System design
-- **[Troubleshooting](livenewsai/README.md#troubleshooting)** - Common issues
-
-## 🛠️ Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| Streaming | Pathway |
-| Framework | FastAPI |
-| Embeddings | OpenAI |
-| LLM | GPT-4 Turbo |
-| Data | NewsAPI |
-| Vector Index | In-Memory KNN |
-| Server | Uvicorn |
-| Container | Docker |
-
-## 💡 Use Cases
-
-- 📰 **News Aggregation**: Real-time news summaries
-- 🤖 **AI Chatbot**: News-aware conversational AI
-- 📊 **Market Intelligence**: Track business/finance news
-- 🔬 **Research Assistant**: Stay updated on research
-- 📱 **Mobile Backend**: News API for apps
-
-## 🚦 API Endpoints
-
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| GET | `/` | API info |
-| GET | `/health` | System status |
-| POST | `/ask` | Ask question |
-| GET | `/stats` | System statistics |
-| GET | `/articles` | Recent articles |
-| GET | `/docs` | Swagger UI |
-
-## 📈 Monitoring
-
-```bash
-# Check health
+📈 Monitoring
 curl http://localhost:8000/health
-
-# View logs
-docker-compose logs -f app
-
-# Performance metrics
 curl http://localhost:8000/stats
-```
 
-## 🐛 Troubleshooting
+📜 License
 
-**"Vector index is empty"** → Wait 60s for initial news fetch
-**"API rate limit exceeded"** → Check API tier, reduce polling interval
-**"Slow queries"** → Reduce TOP_K_RESULTS, increase cache
+MIT License
 
-See [livenewsai/README.md](livenewsai/README.md#troubleshooting) for detailed help.
+🏁 Hackathon Readiness
 
-## 📝 License
+✔ Real-time streaming
+✔ Pathway pipeline
+✔ RAG architecture
+✔ Live demo
+✔ Public GitHub repo
+✔ API documentation
+✔ Docker deployment
+✔ Graceful failure handling
 
-MIT - See LICENSE file
+💡 Use Cases
 
-## 🤝 Contributing
+Real-time news assistant
 
-1. Fork repository
-2. Create feature branch: `git checkout -b feature/name`
-3. Commit changes: `git commit -am 'Add feature'`
-4. Push: `git push origin feature/name`
-5. Submit Pull Request
+Market intelligence
 
-## 📞 Support
+AI-powered newsroom
 
-- 📖 [Documentation](livenewsai/README.md)
-- 🐛 [Issues](https://github.com/ramnarwade24-ui/LiveNews-AI-A-Real-Time-Thinking-RAG-System/issues)
-- 💬 [Discussions](https://github.com/ramnarwade24-ui/LiveNews-AI-A-Real-Time-Thinking-RAG-System/discussions)
+Research monitoring
 
-## 🗺️ Roadmap
+Breaking news summarizer
 
-- [ ] WebSocket endpoint for real-time updates
-- [ ] Additional news sources (Twitter API, RSS)
-- [ ] Fine-tuned embeddings for news
-- [ ] Chat history & context
-- [ ] Multi-language support
-- [ ] Advanced filtering (date, category, sentiment)
-- [ ] Analytics dashboard
-- [ ] Caching layer
+🤝 Team
 
-## 📊 Cost Estimation (Monthly)
+Built for DataQuest 2026 – Team Megalith (IIT Kharagpur)
+Hackathon Category: Real-Time Data Science & AI Systems
 
-- **NewsAPI**: Free-$50+
-- **OpenAI Embeddings**: ~$2-5
-- **OpenAI LLM**: ~$10-50
-- **Infrastructure**: $5-20 (VPS) or free (local)
-- **Total**: ~$17-125/month
+Made with ❤️ using Pathway, FastAPI, and OpenAI
 
----
-
-**Made with ❤️ using Pathway, FastAPI, and OpenAI**
-
-[Live Demo](http://localhost:8000) • [Documentation](livenewsai/README.md) • [Deployment Guide](DEPLOYMENT.md) • [Examples](examples.py)
+Live Demo • Real-Time Streaming • Production Ready
