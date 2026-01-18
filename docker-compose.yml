@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: livenewsai
+    ports:
+      - "8000:8000"
+    environment:
+      # API Keys
+      NEWS_API_KEY: ${NEWS_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      
+      # News API Settings
+      NEWS_POLLING_INTERVAL: 60
+      NEWS_BATCH_SIZE: 20
+      NEWS_LANGUAGE: en
+      
+      # Embeddings
+      EMBEDDING_MODEL: text-embedding-3-small
+      
+      # Vector Search
+      TOP_K_RESULTS: 5
+      SIMILARITY_THRESHOLD: 0.7
+      
+      # LLM Settings
+      LLM_MODEL: gpt-4-turbo
+      LLM_TEMPERATURE: 0.7
+      
+      # Server Settings
+      FASTAPI_HOST: 0.0.0.0
+      FASTAPI_PORT: 8000
+      FASTAPI_RELOAD: "false"
+      
+      # Logging
+      LOG_LEVEL: INFO
+      
+    volumes:
+      - ./livenewsai:/app
+      - /tmp/livenewsai:/tmp/livenewsai
+    
+    restart: unless-stopped
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Monitoring service (can be extended for Prometheus/Grafana)
+  # monitor:
+  #   image: prom/prometheus:latest
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+volumes:
+  livenewsai-data:
+    driver: local
