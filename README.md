@@ -26,6 +26,119 @@ Live retrieval
 
 RAG pipeline execution
 
+
+⚙️ How To Run (Step-by-Step)
+
+This project can run locally or using Docker.
+
+🔹 Option 1: Run Locally (Recommended for Judges)
+Prerequisites
+
+Python 3.10+
+
+NewsAPI key (free from https://newsapi.org
+)
+
+OpenAI API key (optional, only for AI summaries)
+
+Step 1 — Clone Repository
+git clone https://github.com/ramnarwade24-ui/LiveNews-AI-A-Real-Time-Thinking-RAG-System
+cd LiveNews-AI-A-Real-Time-Thinking-RAG-System
+
+Step 2 — Create Virtual Environment
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+# OR
+venv\Scripts\activate      # Windows
+
+Step 3 — Install Dependencies
+cd livenewsai
+pip install -r requirements.txt
+
+Step 4 — Set Environment Variables
+export NEWS_API_KEY="your-newsapi-key"
+
+# Optional (for AI summaries)
+export OPENAI_API_KEY="your-openai-key"
+
+Step 5 — Start Server
+python app.py
+
+
+Server will start at:
+
+http://localhost:8000
+
+
+Swagger UI:
+
+http://localhost:8000/docs
+
+🔹 Option 2: Run Using Docker
+Prerequisites
+
+Docker
+
+Docker Compose
+
+Step 1 — Set API Keys
+export NEWS_API_KEY="your-newsapi-key"
+export OPENAI_API_KEY="your-openai-key"   # optional
+
+Step 2 — Run
+docker-compose up --build
+
+
+Server will start at:
+
+http://localhost:8000
+
+🔍 How To Verify It Is Working
+1️⃣ Health Check
+curl http://localhost:8000/health
+
+
+Expected Output:
+
+{
+  "status": "healthy",
+  "pipeline_running": true,
+  "index_size": 50,
+  "timestamp": "2026-01-18T14:05:22.470465"
+}
+
+2️⃣ Ask Question
+curl -X POST http://localhost:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What are today's top business headlines?",
+    "top_k": 5
+  }'
+
+3️⃣ Real-Time Streaming Proof
+
+Check index growth:
+
+curl http://localhost:8000/stats
+
+
+You will see index size increasing every minute as new news arrives.
+
+🧠 Graceful AI Fallback Mode (No OpenAI Credits Required)
+
+If OpenAI quota is unavailable, system automatically switches to fallback mode:
+
+{
+  "answer": "AI model temporarily unavailable — showing retrieved news context.",
+  "article_summaries": [...],
+  "sources": [...],
+  "ai_status": "rate_limited"
+}
+
+
+✔ Real-time retrieval still works
+✔ Indexing still runs
+✔ Streaming pipeline stays active
 ✨ Key Features
 
 Real-Time Streaming — Continuously ingests news from NewsAPI every 60 seconds
