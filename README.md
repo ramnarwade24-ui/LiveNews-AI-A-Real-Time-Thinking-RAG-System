@@ -130,23 +130,25 @@ If OpenAI quota is unavailable, the system automatically switches to fallback mo
 This allows full real-time RAG functionality without paid APIs.
 
 📁 Project Structure
+
 LiveNews-AI-A-Real-Time-Thinking-RAG-System/
 │
-├── livenewsai/
-│   ├── app.py
-│   ├── pathway_pipeline.py
-│   ├── connectors.py
-│   ├── rag.py
-│   ├── config.py
-│   ├── requirements.txt
-│   └── test_livenewsai.py
+├── livenewsai/ # Main application package
+│ ├── app.py # FastAPI server
+│ ├── pathway_pipeline.py # Pathway streaming pipeline
+│ ├── connectors.py # NewsAPI connector
+│ ├── rag.py # RAG query engine
+│ ├── config.py # Configuration
+│ ├── requirements.txt # Dependencies
+│ └── test_livenewsai.py # Tests
 │
-├── Dockerfile
-├── docker-compose.yml
-├── quickstart.sh
-├── docker-quickstart.sh
-├── DEPLOYMENT.md
-└── README.md
+├── Dockerfile # Docker image
+├── docker-compose.yml # Multi-container setup
+├── quickstart.sh # Local quick start
+├── docker-quickstart.sh # Docker quick start
+├── DEPLOYMENT.md # Deployment guide
+├── .env.example # Environment template
+└── README.md # Project documentation
 
 🔧 Configuration
 export NEWS_POLLING_INTERVAL=60
