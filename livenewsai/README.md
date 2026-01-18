@@ -1,6 +1,27 @@
 # LiveNewsAI - Real-Time RAG System
 
 A production-grade real-time Retrieval Augmented Generation (RAG) system built with **Pathway** that continuously ingests breaking news and answers user questions using the latest articles without requiring restarts or re-indexing.
+🎥 Hackathon Live Demo
+
+Live Swagger UI (GitHub Codespaces):
+https://curly-umbrella-4j5x7vp6pxvqcjrj-8000.app.github.dev/docs
+
+Health Check:
+https://curly-umbrella-4j5x7vp6pxvqcjrj-8000.app.github.dev/health
+
+Example Query:
+
+"What are today's top business headlines?"
+
+The system demonstrates:
+
+Real-time ingestion
+
+Streaming vector indexing
+
+Live retrieval
+
+RAG pipeline execution
 
 ## Architecture Overview
 
@@ -36,7 +57,12 @@ Live News API Stream
 
 ⚡ **No Restarts**: Answers update automatically as new articles arrive - no reindexing needed
 
-🚀 **Production-Ready**: FastAPI server, Docker containerization, comprehensive logging
+
+⭐ Bonus Capabilities
+
+Graceful AI Fallback — If OpenAI quota is unavailable, system still returns real-time retrieved news context, article summaries, and sources.
+
+No-Credit Mode — Fully functional retrieval + indexing pipeline without OpenAI credits.
 
 ## Tech Stack
 
@@ -48,20 +74,29 @@ Live News API Stream
 - **Docker**: Containerization
 - **Uvicorn**: ASGI server
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-livenewsai/
-├── app.py                 # FastAPI server with REST endpoints
-├── pathway_pipeline.py    # Streaming ingestion & vector indexing
-├── connectors.py          # NewsAPI Pathway connector
-├── rag.py                 # RAG query engine
-├── config.py              # Configuration & environment variables
-├── requirements.txt       # Python dependencies
-├── Dockerfile             # Container definition
-├── docker-compose.yml     # Multi-container orchestration
-└── README.md              # This file
+LiveNews-AI-A-Real-Time-Thinking-RAG-System/
+│
+├── livenewsai/                  # Main application package
+│   ├── app.py                  # FastAPI server
+│   ├── pathway_pipeline.py     # Pathway streaming pipeline
+│   ├── connectors.py           # NewsAPI connector
+│   ├── rag.py                  # RAG query engine
+│   ├── config.py               # Configuration
+│   ├── requirements.txt        # Dependencies
+│   └── test_livenewsai.py      # Tests
+│
+├── Dockerfile                  # Docker image
+├── docker-compose.yml          # Multi-container setup
+├── quickstart.sh               # Local quick start
+├── docker-quickstart.sh        # Docker quick start
+├── DEPLOYMENT.md               # Deployment guide
+├── .env.example                # Environment template
+└── README.md                  # Project documentation
 ```
+
 
 ## Installation & Setup
 
